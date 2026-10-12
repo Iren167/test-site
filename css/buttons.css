@@ -1,0 +1,67 @@
+/* Свечение и волны для кнопок. Подключается после style.css */
+
+.btn { position: relative; isolation: isolate; }
+
+/* ---- основная кнопка: мягкое свечение + расходящиеся волны ---- */
+.btn--primary {
+  box-shadow: 0 0 14px rgba(194, 82, 127, .45), 0 6px 20px rgba(194, 82, 127, .25);
+  animation: btn-glow 2.8s ease-in-out infinite;
+}
+.btn--primary::before,
+.btn--primary::after {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  border: 2px solid rgba(228, 143, 180, .75);
+  opacity: 0;
+  animation: btn-wave 2.8s ease-out infinite;
+  pointer-events: none;
+}
+.btn--primary::after { animation-delay: 1.4s; }
+.btn--primary:hover {
+  animation-play-state: paused;
+  box-shadow: 0 0 26px rgba(228, 143, 180, .85), 0 10px 32px rgba(194, 82, 127, .4);
+}
+
+/* ---- светлая кнопка: свечение при наведении + блик ---- */
+.btn--ghost { overflow: hidden; }
+.btn--ghost::before {
+  content: "";
+  position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(228, 143, 180, .35), transparent);
+  transform: skewX(-20deg);
+  transition: left .6s ease;
+  pointer-events: none;
+}
+.btn--ghost:hover { box-shadow: 0 0 18px rgba(228, 143, 180, .5); }
+.btn--ghost:hover::before { left: 120%; }
+
+/* ---- круговая волна от места нажатия ---- */
+.btn__ripples {
+  position: absolute; inset: 0; z-index: 0;
+  border-radius: inherit; overflow: hidden; pointer-events: none;
+}
+.btn__ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(255, 255, 255, .55);
+  transform: scale(0);
+  animation: btn-ripple .7s ease-out forwards;
+}
+.btn--ghost .btn__ripple { background: rgba(194, 82, 127, .28); }
+
+@keyframes btn-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(194, 82, 127, .4), 0 6px 20px rgba(194, 82, 127, .22); }
+  50%      { box-shadow: 0 0 24px rgba(228, 143, 180, .8), 0 8px 26px rgba(194, 82, 127, .35); }
+}
+@keyframes btn-wave {
+  0%   { transform: scale(1);    opacity: .7; }
+  100% { transform: scale(1.35, 1.7); opacity: 0; }
+}
+@keyframes btn-ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--primary, .btn--primary::before, .btn--primary::after, .btn__ripple { animation: none !important; }
+  .btn--ghost::before { transition: none; }
+}
